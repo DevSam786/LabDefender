@@ -8,7 +8,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameInput gameInput;
     private bool canMove;
     [HideInInspector]public Vector2 input;
-    
+    private Rigidbody playerRb;
+    Vector3 moveDir;
 
     [Header("Dash")]
     // Dash Settings
@@ -23,7 +24,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        playerRb = GetComponent<Rigidbody>();   
     }
 
     // Update is called once per frame
@@ -44,17 +45,14 @@ public class PlayerController : MonoBehaviour
     void HandleMovement()
     {
         input = gameInput.GetInputVectorNormalized();
-        Vector3 moveDir = new Vector3(input.x, 0, input.y);
+        moveDir = new Vector3(input.x, 0, input.y);
+    }
+    private void FixedUpdate()
+    {
+        playerRb.MovePosition(playerRb.position + moveDir * moveSpeed * Time.fixedDeltaTime);
 
-        float moveDistance = moveSpeed * Time.deltaTime;
-        float playerHeight = 1.49f;
-        float playerRadius = 0.20f;
-        canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDir,moveDistance);
-        if (canMove)
-        {
-            transform.position += moveDir * moveSpeed * Time.deltaTime;
-        }
-    }    
+    }
+
     void HandleInteraction()
     {
 
